@@ -15,7 +15,7 @@ const io = new Server(chatServer);
 const jwt = require("jsonwebtoken");
 const chatController = require("./controllers/Chats");
 const { Socket } = require('dgram');
-const MessageModel = require("../models/Messages");
+// const MessageModel = require("../models/Messages");
 
 
 mongoose.connect(MONGO_URI, {
@@ -54,9 +54,9 @@ var mapSocketIds = {};
 
 // Socket.io chat realtime
 io.on('connection', (socket) => {
-    MessageModel.find().then(result => {
-        socket.emit('output-messages', result)
-    })
+    // MessageModel.find().then(result => {
+    //     socket.emit('output-messages', result)
+    // })
     console.log('a user connected: ', socket.id);
     console.log(socket.id);
     if (socket.handshake.headers.token) {
