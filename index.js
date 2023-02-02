@@ -15,9 +15,9 @@ const io = new Server(chatServer);
 const jwt = require("jsonwebtoken");
 const chatController = require("./controllers/Chats");
 const { Socket } = require('dgram');
-// const MessageModel = require("../models/Messages");
+const MessageModel = require("../models/Messages");
 
-// connect to mongodb
+
 mongoose.connect(MONGO_URI, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
@@ -54,11 +54,11 @@ var mapSocketIds = {};
 
 // Socket.io chat realtime
 io.on('connection', (socket) => {
-    // MessageModel.find().then(result => {
-    //     socket.emit('output-messages', result)
-    // })
-    // console.log('a user connected: ', socket.id);
-    // console.log(socket.id);
+    MessageModel.find().then(result => {
+        socket.emit('output-messages', result)
+    })
+    console.log('a user connected: ', socket.id);
+    console.log(socket.id);
     if (socket.handshake.headers.token) {
         try {
             decoded = jwt.verify(socket.handshake.headers.token, process.env.JWT_SECRET);
@@ -74,7 +74,7 @@ io.on('connection', (socket) => {
             console.log("Invalid token")
         }
     }
-    // socket.emit('message', 'Hello world');
+    socket.emit('message', 'Hello world');
     socket.on('disconnect', () => {
         let userId = mapSocketIds[socket.id];
         if (socketIds[userId]) {
@@ -85,10 +85,10 @@ io.on('connection', (socket) => {
             }
         }
 
-        // console.log(socketIds[userId])
+        console.log(socketIds[userId])
     });
     socket.on('chatmessage', async (msg) => {
-        // console.log(msg.token)
+        console.log(msg.token)
         if (msg.token && msg.receiverId) {
             try {
                 decoded = jwt.verify(msg.token, process.env.JWT_SECRET);
